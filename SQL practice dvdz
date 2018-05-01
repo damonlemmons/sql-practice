@@ -1,0 +1,36 @@
+
+DVD Rental Database Challenges
+Hint: use INTERSECT or OUTER JOIN or INNER JOIN
+
+Which customer placed the rentals on the earliest date? What did they rent?
+
+
+
+WITH early_date AS
+  (SELECT rental_date, customer_id, inventory_id
+  FROM rentals
+  ORDER BY rental_date
+  LIMIT 1)
+SELECT ed.rental_date, c.first_name, c.last_name, f.title
+FROM customers c JOIN early_date ed USING (customer_id) JOIN inventory i USING (inventory_id) JOIN films f USING (film_id)
+
+
+
+Which product do we have the most of? Find the rental ids and customer names for all rentals for that item.
+
+
+
+
+What rentals have there been from Texas? In June 2005?
+
+
+
+
+
+How many rentals have we had for sci-fi films? From Texas?
+
+
+
+
+Which actors have not appeared in a Sci-Fi film?
+Find all customers who have not rented a Sci-Fi film.

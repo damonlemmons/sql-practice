@@ -1,0 +1,157 @@
+Country Database Join Challenge
+Start by making a picture showing the tables of the database and how the relate (which columns represent the same information).
+
+Relatively Simple JOINS
+
+What languages are spoken in the United States? (12) Brazil? (not Spanish...) Switzerland? (6)
+
+SELECT language FROM countrylanguage
+WHERE countrycode= 'USA'
+
+Select c.code, cl.language
+From country c
+Join countrylanguage cl
+On (c.code = cl.countrycode)
+Where code = 'USA'
+
+Brazil
+SELECT language FROM countrylanguage
+WHERE countrycode= 'BRA'
+
+Select c.code, cl.language
+From country c
+Join countrylanguage cl
+On (c.code = cl.countrycode)
+Where code = 'BRA'
+
+Switzerland
+SELECT language
+FROM countrylanguage
+WHERE countrycode= 'CHE'
+
+Select c.code, cl.language
+From country c
+Join countrylanguage cl
+On (c.code = cl.countrycode)
+Where code = 'CHE'
+
+What are the cities of the US? (274) India? (341)
+
+USA cities
+SELECT name FROM city WHERE countrycode = 'USA'
+
+SELECT c.name, ci.name
+FROM country c
+JOIN cities ci
+ON (c.code = cl.countrycode)
+WHERE countrycode = 'USA'
+
+
+INDIA cties
+SELECT name FROM city WHERE countrycode = 'IND'
+
+SELECT c.name, ci.name
+FROM country c
+JOIN cities ci
+ON (c.code = cl.countrycode)
+WHERE countrycode = 'IND'
+
+Languages
+What are the official languages of Switzerland? (4 languages)
+SELECT * FROM countrylanguage WHERE isofficial = true AND countrycode = 'CHE'
+
+SELECT c.name, cl.language
+FROM country c
+JOIN countrylanguage cl
+ON (c.code = cl.countrycode)
+WHERE isofficial = true AND countrycode = 'CHE'
+
+Which country or countries speak the most languages? (12 languages)
+
+Hint: Use GROUP BY and COUNT(...)
+
+SELECT countrycode, count(countrylanguage.language) AS number_of_langs
+FROM countrylanguage
+GROUP BY countrycode
+ORDER BY number_of_langs DESC
+
+SELECT c.name, count(cl.language) AS number_of_langs
+FROM country c
+JOIN countrylanguage cl
+ON (c.code = cl.countrycode)
+GROUP BY c.name
+ORDER BY number_of_langs DESC
+
+
+Which country or countries have the most official languages? (4 languages)
+
+Hint: Use GROUP BY and ORDER BY
+
+SELECT c.name, count(cl.languages) AS number_of_langs
+FROM country c
+JOIN countrylanguage cl
+ON (c.code = cl.countrycode)
+WHERE isofficial = true
+GROUP BY c.name
+ORDER BY number_of_langs DESC
+
+
+
+Which languages are spoken in the ten largest (area) countries?
+
+Hint: Use WITH to get the countries and join with that table
+WITH largest_surfacearea AS
+  (SELECT name, surfacearea, code
+  FROM country
+  WHERE surfacearea > 0 AND population > 0
+  ORDER BY surfacearea DESC
+  LIMIT 10)
+SELECT ls.name, cl.language
+FROM countrylanguage cl JOIN largest_surfacearea ls ON cl.countrycode = ls.code
+ORDER BY ls.name
+
+We got 9 because Antarctica does not exist on the countrylanguage table
+
+
+
+
+What languages are spoken in the 20 poorest (GNP/ capita) countries in the world? (94 with GNP > 0)
+
+
+Hint: Use WITH to get the countries, and SELECT DISTINCT to remove duplicates
+
+WITH poor AS
+  (SELECT name, code
+  FROM country
+  WHERE population > 0 AND gnp > 0
+  ORDER BY (gnp/population) LIMIT 20)
+SELECT DISTINCT cl.language
+FROM countrylanguage cl JOIN poor p ON cl.countrycode = p.code
+ORDER BY cl.language
+
+
+
+
+Are there any countries without an official language?
+Hint: Use NOT IN with a SELECT
+
+WITH no_lang AS
+  (SELECT countrycode
+  FROM countrylanguage
+  WHERE isofficial = true )
+SELECT cl.countrycode
+FROM countrylanguage cl JOIN no_lang nl ON cl.countrycode = nl.countrycode
+WHERE countrycode NOT IN no_lang
+
+What are the languages spoken in the countries with no official language? (49 countries, 172 languages, incl. English)
+Which countries have the highest proportion of official language speakers? The lowest?
+What is the most spoken language in the world?
+Cities
+What is the population of the United States? What is the city population of the United States?
+What is the population of the India? What is the city population of the India?
+Which countries have no cities? (7 not really contries...)
+Languages and Cities
+What is the total population of cities where English is the official language? Spanish?
+Hint: The official language of a city is based on country.
+Which countries have the 100 biggest cities in the world?
+What languages are spoken in the countries with the 100 biggest cities in the world?
